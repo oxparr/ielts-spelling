@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="tr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>IELTS Listening Yazım Pratiği</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#F6F7F9;--sheet:#FFFFFF;--form:#C8102E;--formSoft:#F4D3D8;--ink:#1C2541;--muted:#6B7280;--ok:#2E7D4F;--okSoft:#DDEFE3;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#12151C;--sheet:#1A1F2A;--form:#FF5A6E;--formSoft:#4A2028;--ink:#E7EAF0;--muted:#9AA3B2;--ok:#5CC98A;--okSoft:#1E3A2A}}
+:root[data-theme="dark"]{--paper:#12151C;--sheet:#1A1F2A;--form:#FF5A6E;--formSoft:#4A2028;--ink:#E7EAF0;--muted:#9AA3B2;--ok:#5CC98A;--okSoft:#1E3A2A}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:Barlow,"Segoe UI",Roboto,Arial,sans-serif;font-size:17px;line-height:1.5}
+main{max-width:720px;margin:0 auto;padding:28px 18px 60px}
+h1{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:700;font-size:2.1rem;line-height:1.1;margin:0 0 4px}
+.sub{color:var(--muted);margin:0 0 22px}
+.sheet{background:var(--sheet);border:1.5px solid var(--form);border-radius:6px;padding:22px 20px 24px;position:relative}
+.sheet::before{content:"";position:absolute;inset:6px;border:1px solid var(--formSoft);border-radius:3px;pointer-events:none}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+select,button{font:inherit;color:var(--ink)}
+select{background:var(--sheet);border:1.5px solid var(--formSoft);border-radius:4px;padding:8px 10px}
+button{cursor:pointer;border-radius:4px;padding:10px 16px;border:1.5px solid var(--ink);background:transparent;font-weight:600}
+button.primary{background:var(--form);border-color:var(--form);color:#fff}
+button:focus-visible,select:focus-visible{outline:3px solid var(--form);outline-offset:2px}
+button:disabled{opacity:.45;cursor:default}
+.qhead{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px;font-family:"Barlow Condensed",sans-serif;font-size:1.15rem;color:var(--form)}
+.qhead b{font-weight:700}
+.listen{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap}
+.listen button.play{font-size:1.05rem;padding:12px 20px}
+.cellsWrap{position:relative;overflow-x:auto;padding:2px 0 6px}
+.cells{display:flex;flex-wrap:nowrap;gap:0;min-height:52px}
+.cell{width:34px;height:46px;border:1.5px solid var(--form);margin-left:-1.5px;display:flex;align-items:center;justify-content:center;font-family:"IBM Plex Mono",Consolas,monospace;font-size:1.35rem;background:var(--sheet);flex:0 0 auto}
+.cell:first-child{margin-left:0}
+.cell.cur{box-shadow:inset 0 -3px 0 var(--form)}
+.cell.bad{background:var(--formSoft)}
+.cell.good{background:var(--okSoft)}
+#inp{position:absolute;inset:0;opacity:0;width:100%;font-size:16px;border:0}
+.hint{color:var(--muted);font-size:.95rem;margin:10px 0 0}
+.result{margin-top:18px;padding:14px 16px;border-left:4px solid var(--ok);background:var(--okSoft);border-radius:0 4px 4px 0}
+.result.wrong{border-color:var(--form);background:var(--formSoft)}
+.result p{margin:2px 0}
+.diff span{font-family:"IBM Plex Mono",monospace}
+.diff .x{color:var(--form);text-decoration:underline;font-weight:700}
+.bar{height:6px;background:var(--formSoft);border-radius:3px;margin:0 0 18px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--form);width:0;transition:width .3s}
+.actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+.score{font-family:"Barlow Condensed",sans-serif;font-size:3.4rem;font-weight:700;line-height:1;color:var(--form)}
+ul.wl{padding-left:18px;margin:8px 0}
+.note{font-size:.9rem;color:var(--muted);margin-top:26px;max-width:62ch}
+.hidden{display:none!important}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+</style></head><body><main>
+<h1>Listening yazım pratiği</h1>
+<p class="sub">Kelimeyi dinle, cevap kağıdındaki gibi kutulara yaz. Tek harf hatası sınavda puan kaybettirir.</p>
+
+<section id="setup" class="sheet">
+  <div class="row">
+    <label for="cat">Konu</label>
+    <select id="cat"></select>
+    <label for="len">Soru</label>
+    <select id="len"><option>10</option><option selected>20</option><option>40</option></select>
+  </div>
+  <div class="actions"><button class="primary" id="start">Teste başla</button><button id="review">Yanlışlarımı çalış (<span id="wc">0</span>)</button></div>
+  <div class="row" style="margin-top:14px"><label for="vsel">Ses</label><select id="vsel" style="max-width:100%"></select><button id="vtest">Sesi dene</button></div>
+  <p class="hint" id="voiceNote"></p>
+</section>
+
+<section id="quiz" class="sheet hidden" aria-live="polite">
+  <div class="bar"><i id="prog"></i></div>
+  <div class="qhead"><span>Soru <b id="qn">1</b> / <span id="qt">20</span></span><span id="sc">0 doğru</span></div>
+  <div class="listen">
+    <button class="primary play" id="play">🔊 Dinle</button>
+    <button id="slow">Yavaş dinle</button>
+    <button id="hintBtn">Türkçe ipucu</button>
+  </div>
+  <div class="cellsWrap"><div class="cells" id="cells"></div><input id="inp" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Duyduğun kelimeyi yaz"></div>
+  <p class="hint" id="tr"></p>
+  <div id="res" class="result hidden"></div>
+  <div class="actions"><button class="primary" id="check">Kontrol et</button><button id="next" class="hidden primary">Sonraki</button></div>
+</section>
+
+<section id="end" class="sheet hidden">
+  <div class="score" id="final"></div>
+  <p id="finalTxt"></p>
+  <div id="wrongList"></div>
+  <div class="actions"><button class="primary" id="again">Yeni test</button><button id="redo">Yanlışlarımı çalış</button></div>
+</section>
+
+<p class="note">Kelimeler kursun "IELTS Listening Spelling List" ve "1200 most commonly repeated words" dosyalarından seçildi. İngiliz ve Amerikan yazımı ikisi de kabul ediliyor (centre / center). Büyük-küçük harf önemli değil. Yanlış yaptığın kelimeler bu tarayıcıda saklanıyor.</p>
+</main>
+<script>
+const WORDS=[{"c":"z","w":"accommodation","t":"konaklama","a":[]},{"c":"z","w":"Wednesday","t":"Çarşamba","a":[]},{"c":"z","w":"February","t":"Şubat","a":[]},{"c":"z","w":"necessary","t":"gerekli","a":[]},{"c":"z","w":"environment","t":"çevre","a":[]},{"c":"z","w":"government","t":"hükümet","a":[]},{"c":"z","w":"library","t":"kütüphane","a":[]},{"c":"z","w":"restaurant","t":"restoran","a":[]},{"c":"z","w":"business","t":"iş, ticaret","a":[]},{"c":"z","w":"questionnaire","t":"anket formu","a":[]},{"c":"z","w":"temperature","t":"sıcaklık","a":[]},{"c":"z","w":"stationery","t":"kırtasiye","a":[]},{"c":"z","w":"receptionist","t":"resepsiyon görevlisi","a":[]},{"c":"z","w":"appointment","t":"randevu","a":[]},{"c":"z","w":"schedule","t":"program, takvim","a":[]},{"c":"z","w":"guarantee","t":"garanti","a":[]},{"c":"z","w":"souvenir","t":"hatıra eşya","a":[]},{"c":"z","w":"reservation","t":"rezervasyon","a":[]},{"c":"z","w":"entertainment","t":"eğlence","a":[]},{"c":"z","w":"pedestrian","t":"yaya","a":[]},{"c":"z","w":"encyclopedia","t":"ansiklopedi","a":["encyclopaedia"]},{"c":"z","w":"knowledgeable","t":"bilgili","a":[]},{"c":"z","w":"convenient","t":"elverişli, uygun","a":[]},{"c":"z","w":"comfortable","t":"rahat","a":[]},{"c":"z","w":"recommended","t":"tavsiye edilen","a":[]},{"c":"z","w":"disappointed","t":"hayal kırıklığına uğramış","a":[]},{"c":"z","w":"efficient","t":"verimli","a":[]},{"c":"z","w":"luxurious","t":"lüks","a":[]},{"c":"z","w":"spectacular","t":"muhteşem","a":[]},{"c":"z","w":"vulnerable","t":"savunmasız","a":[]},{"c":"z","w":"compulsory","t":"zorunlu","a":[]},{"c":"z","w":"temporary","t":"geçici","a":[]},{"c":"z","w":"permanent","t":"kalıcı","a":[]},{"c":"z","w":"voluntary","t":"gönüllü","a":[]},{"c":"z","w":"equipment","t":"ekipman","a":[]},{"c":"z","w":"kindergarten","t":"anaokulu","a":[]},{"c":"z","w":"psychology","t":"psikoloji","a":[]},{"c":"z","w":"architecture","t":"mimarlık","a":[]},{"c":"z","w":"archaeology","t":"arkeoloji","a":["archeology"]},{"c":"z","w":"cafeteria","t":"kafeterya","a":[]},{"c":"g","w":"Monday","t":"Pazartesi","a":[]},{"c":"g","w":"Tuesday","t":"Salı","a":[]},{"c":"g","w":"Thursday","t":"Perşembe","a":[]},{"c":"g","w":"Saturday","t":"Cumartesi","a":[]},{"c":"g","w":"January","t":"Ocak","a":[]},{"c":"g","w":"March","t":"Mart","a":[]},{"c":"g","w":"August","t":"Ağustos","a":[]},{"c":"g","w":"September","t":"Eylül","a":[]},{"c":"g","w":"October","t":"Ekim","a":[]},{"c":"g","w":"November","t":"Kasım","a":[]},{"c":"g","w":"December","t":"Aralık","a":[]},{"c":"g","w":"fortnight","t":"iki hafta","a":[]},{"c":"g","w":"decade","t":"on yıl","a":[]},{"c":"g","w":"century","t":"yüzyıl","a":[]},{"c":"g","w":"millennium","t":"bin yıl","a":[]},{"c":"g","w":"midnight","t":"gece yarısı","a":[]},{"c":"g","w":"midday","t":"öğle vakti","a":[]},{"c":"g","w":"part-time","t":"yarı zamanlı","a":["part time"]},{"c":"g","w":"full-time","t":"tam zamanlı","a":["full time"]},{"c":"p","w":"cheque","t":"çek","a":["check"]},{"c":"p","w":"mortgage","t":"konut kredisi","a":[]},{"c":"p","w":"deposit","t":"depozito, kapora","a":[]},{"c":"p","w":"tuition fees","t":"öğrenim ücreti","a":[]},{"c":"p","w":"withdraw","t":"para çekmek","a":[]},{"c":"p","w":"budget","t":"bütçe","a":[]},{"c":"p","w":"voucher","t":"kupon, hediye çeki","a":[]},{"c":"p","w":"debt","t":"borç","a":[]},{"c":"p","w":"purchase","t":"satın alma","a":[]},{"c":"p","w":"refund","t":"iade","a":[]},{"c":"p","w":"non-refundable","t":"iade edilmez","a":["nonrefundable"]},{"c":"p","w":"income","t":"gelir","a":[]},{"c":"p","w":"interest rate","t":"faiz oranı","a":[]},{"c":"p","w":"annual fee","t":"yıllık ücret","a":[]},{"c":"p","w":"counterfeit","t":"sahte","a":[]},{"c":"p","w":"insurance","t":"sigorta","a":[]},{"c":"p","w":"bank statement","t":"banka hesap özeti","a":[]},{"c":"p","w":"credit card","t":"kredi kartı","a":[]},{"c":"u","w":"course outline","t":"ders izlencesi","a":[]},{"c":"u","w":"handout","t":"ders notu","a":[]},{"c":"u","w":"assessment","t":"değerlendirme","a":[]},{"c":"u","w":"deadline","t":"son teslim tarihi","a":[]},{"c":"u","w":"dissertation","t":"tez","a":[]},{"c":"u","w":"attendance","t":"devam, katılım","a":[]},{"c":"u","w":"supervisor","t":"danışman, gözetmen","a":[]},{"c":"u","w":"tutor","t":"özel öğretmen, danışman hoca","a":[]},{"c":"u","w":"lecture","t":"ders, konferans","a":[]},{"c":"u","w":"certificate","t":"sertifika","a":[]},{"c":"u","w":"diploma","t":"diploma","a":[]},{"c":"u","w":"placement test","t":"seviye tespit sınavı","a":[]},{"c":"u","w":"faculty","t":"fakülte","a":[]},{"c":"u","w":"leaflet","t":"broşür","a":[]},{"c":"u","w":"feedback","t":"geri bildirim","a":[]},{"c":"u","w":"guidelines","t":"yönergeler","a":[]},{"c":"u","w":"proofreading","t":"metin düzeltme","a":[]},{"c":"u","w":"experiment","t":"deney","a":[]},{"c":"u","w":"reference","t":"referans","a":[]},{"c":"u","w":"dictionary","t":"sözlük","a":[]},{"c":"u","w":"laboratory","t":"laboratuvar","a":[]},{"c":"u","w":"facilities","t":"olanaklar, tesisler","a":[]},{"c":"u","w":"overseas students","t":"yabancı öğrenciler","a":[]},{"c":"u","w":"statistics","t":"istatistik","a":[]},{"c":"u","w":"mathematics","t":"matematik","a":[]},{"c":"u","w":"geography","t":"coğrafya","a":[]},{"c":"u","w":"literature","t":"edebiyat","a":[]},{"c":"u","w":"agriculture","t":"tarım","a":[]},{"c":"u","w":"philosophy","t":"felsefe","a":[]},{"c":"u","w":"anthropology","t":"antropoloji","a":[]},{"c":"u","w":"humanities","t":"beşeri bilimler","a":[]},{"c":"s","w":"vegetarian","t":"vejetaryen","a":[]},{"c":"s","w":"protein","t":"protein","a":[]},{"c":"s","w":"vitamin","t":"vitamin","a":[]},{"c":"s","w":"carbohydrates","t":"karbonhidratlar","a":[]},{"c":"s","w":"cereals","t":"tahıllar","a":[]},{"c":"s","w":"yoghurt","t":"yoğurt","a":["yogurt","yoghourt"]},{"c":"s","w":"vegetables","t":"sebzeler","a":[]},{"c":"s","w":"nursery","t":"kreş","a":[]},{"c":"s","w":"treatment","t":"tedavi","a":[]},{"c":"s","w":"remedy","t":"çare, ilaç","a":[]},{"c":"s","w":"medicine","t":"ilaç, tıp","a":[]},{"c":"s","w":"disease","t":"hastalık","a":[]},{"c":"s","w":"balanced diet","t":"dengeli beslenme","a":[]},{"c":"d","w":"erosion","t":"erozyon","a":[]},{"c":"d","w":"earthquake","t":"deprem","a":[]},{"c":"d","w":"avalanche","t":"çığ","a":[]},{"c":"d","w":"hurricane","t":"kasırga","a":[]},{"c":"d","w":"peninsula","t":"yarımada","a":[]},{"c":"d","w":"waterfall","t":"şelale","a":[]},{"c":"d","w":"valley","t":"vadi","a":[]},{"c":"d","w":"cliff","t":"uçurum","a":[]},{"c":"d","w":"desertification","t":"çölleşme","a":[]},{"c":"d","w":"deforestation","t":"ormansızlaşma","a":[]},{"c":"d","w":"pollution","t":"kirlilik","a":[]},{"c":"d","w":"landfill","t":"çöp sahası","a":[]},{"c":"d","w":"renewable","t":"yenilenebilir","a":[]},{"c":"d","w":"fossil fuels","t":"fosil yakıtlar","a":[]},{"c":"d","w":"drought","t":"kuraklık","a":[]},{"c":"d","w":"contaminated","t":"kirlenmiş","a":[]},{"c":"d","w":"vegetation","t":"bitki örtüsü","a":[]},{"c":"d","w":"carbon dioxide","t":"karbondioksit","a":[]},{"c":"d","w":"climate","t":"iklim","a":[]},{"c":"d","w":"solar panels","t":"güneş panelleri","a":[]},{"c":"d","w":"hydroelectric","t":"hidroelektrik","a":[]},{"c":"d","w":"mammals","t":"memeliler","a":[]},{"c":"d","w":"reptile","t":"sürüngen","a":[]},{"c":"d","w":"amphibian","t":"amfibi","a":[]},{"c":"d","w":"species","t":"tür","a":[]},{"c":"d","w":"livestock","t":"çiftlik hayvanları","a":[]},{"c":"d","w":"insects","t":"böcekler","a":[]},{"c":"d","w":"fertiliser","t":"gübre","a":["fertilizer"]},{"c":"d","w":"humid","t":"nemli","a":[]},{"c":"d","w":"freezing","t":"dondurucu","a":[]},{"c":"d","w":"breeze","t":"esinti","a":[]},{"c":"d","w":"moisture","t":"nem","a":[]},{"c":"d","w":"weather forecast","t":"hava durumu tahmini","a":[]},{"c":"e","w":"bungalow","t":"tek katlı ev","a":[]},{"c":"e","w":"basement","t":"bodrum","a":[]},{"c":"e","w":"landlord","t":"ev sahibi","a":[]},{"c":"e","w":"tenant","t":"kiracı","a":[]},{"c":"e","w":"neighbourhood","t":"mahalle","a":["neighborhood"]},{"c":"e","w":"suburb","t":"banliyö","a":[]},{"c":"e","w":"refrigerator","t":"buzdolabı","a":[]},{"c":"e","w":"microwave","t":"mikrodalga","a":[]},{"c":"e","w":"dormitory","t":"yurt","a":[]},{"c":"e","w":"chimney","t":"baca","a":[]},{"c":"e","w":"apartment","t":"daire","a":[]},{"c":"e","w":"embassy","t":"büyükelçilik","a":[]},{"c":"e","w":"avenue","t":"cadde","a":[]},{"c":"e","w":"department store","t":"büyük mağaza","a":[]},{"c":"e","w":"car park","t":"otopark","a":["carpark","car-park"]},{"c":"e","w":"centre","t":"merkez","a":["center"]},{"c":"e","w":"theatre","t":"tiyatro","a":["theater"]},{"c":"e","w":"museum","t":"müze","a":[]},{"c":"e","w":"exhibition","t":"sergi","a":[]},{"c":"e","w":"gallery","t":"galeri","a":[]},{"c":"e","w":"aquarium","t":"akvaryum","a":[]},{"c":"e","w":"hostel","t":"hostel","a":[]},{"c":"e","w":"ferry","t":"feribot","a":[]},{"c":"e","w":"helicopter","t":"helikopter","a":[]},{"c":"e","w":"passenger","t":"yolcu","a":[]},{"c":"e","w":"platform","t":"peron","a":[]},{"c":"e","w":"minibus","t":"minibüs","a":[]},{"c":"e","w":"lorry","t":"kamyon","a":[]},{"c":"e","w":"underground","t":"metro","a":[]},{"c":"e","w":"aircraft","t":"uçak","a":[]},{"c":"m","w":"occupation","t":"meslek","a":[]},{"c":"m","w":"profession","t":"meslek","a":[]},{"c":"m","w":"architect","t":"mimar","a":[]},{"c":"m","w":"engineer","t":"mühendis","a":[]},{"c":"m","w":"secretary","t":"sekreter","a":[]},{"c":"m","w":"accountant","t":"muhasebeci","a":[]},{"c":"m","w":"cashier","t":"kasiyer","a":[]},{"c":"m","w":"lecturer","t":"öğretim görevlisi","a":[]},{"c":"m","w":"volunteer","t":"gönüllü","a":[]},{"c":"m","w":"freelance","t":"serbest çalışan","a":[]},{"c":"m","w":"vacancy","t":"açık pozisyon","a":[]},{"c":"m","w":"colleague","t":"iş arkadaşı","a":[]},{"c":"m","w":"employee","t":"çalışan","a":[]},{"c":"m","w":"employer","t":"işveren","a":[]},{"c":"m","w":"internship","t":"staj","a":[]},{"c":"m","w":"recruitment","t":"işe alım","a":[]},{"c":"m","w":"psychologist","t":"psikolog","a":[]},{"c":"m","w":"catalogue","t":"katalog","a":["catalog"]},{"c":"m","w":"newsletter","t":"bülten","a":[]},{"c":"m","w":"competition","t":"yarışma, rekabet","a":[]},{"c":"m","w":"strategies","t":"stratejiler","a":[]},{"c":"m","w":"customer","t":"müşteri","a":[]},{"c":"m","w":"survey","t":"anket","a":[]},{"c":"m","w":"merchandise","t":"ticari mal","a":[]},{"c":"m","w":"manufacture","t":"üretmek","a":[]},{"c":"m","w":"programme","t":"program","a":["program"]},{"c":"h","w":"rectangular","t":"dikdörtgen","a":[]},{"c":"h","w":"triangular","t":"üçgen","a":[]},{"c":"h","w":"cylindrical","t":"silindirik","a":[]},{"c":"h","w":"circular","t":"dairesel","a":[]},{"c":"h","w":"spherical","t":"küresel","a":[]},{"c":"h","w":"height","t":"yükseklik","a":[]},{"c":"h","w":"width","t":"genişlik","a":[]},{"c":"h","w":"length","t":"uzunluk","a":[]},{"c":"h","w":"depth","t":"derinlik","a":[]},{"c":"h","w":"orienteering","t":"yön bulma sporu","a":[]},{"c":"h","w":"archery","t":"okçuluk","a":[]},{"c":"h","w":"photography","t":"fotoğrafçılık","a":[]},{"c":"h","w":"pottery","t":"çömlekçilik","a":[]},{"c":"h","w":"gymnasium","t":"spor salonu","a":[]},{"c":"h","w":"athlete","t":"sporcu","a":[]},{"c":"h","w":"stadium","t":"stadyum","a":[]},{"c":"h","w":"badminton","t":"badminton","a":[]},{"c":"h","w":"embroidery","t":"nakış","a":[]},{"c":"h","w":"canoeing","t":"kano","a":[]},{"c":"h","w":"aluminium","t":"alüminyum","a":["aluminum"]},{"c":"h","w":"leather","t":"deri","a":[]},{"c":"h","w":"rubber","t":"kauçuk, lastik","a":[]},{"c":"h","w":"concrete","t":"beton","a":[]},{"c":"h","w":"ceramics","t":"seramik","a":[]},{"c":"h","w":"cotton","t":"pamuk","a":[]},{"c":"h","w":"fabric","t":"kumaş","a":[]},{"c":"h","w":"grey","t":"gri","a":["gray"]},{"c":"h","w":"purple","t":"mor","a":[]}];
+const CATS={all:"Tümü",z:"Sık yanlış yazılanlar",g:"Günler, aylar, zaman",p:"Para",u:"Üniversite",s:"Sağlık ve yiyecek",d:"Doğa ve çevre",e:"Ev, şehir, ulaşım",m:"İş ve pazarlama",h:"Şekil, hobi, malzeme"};
+const $=id=>document.getElementById(id);
+const store={get(){try{return JSON.parse(localStorage.getItem('spellWrong')||'{}')}catch(e){return {}}},set(v){try{localStorage.setItem('spellWrong',JSON.stringify(v))}catch(e){}}};
+let wrongStore=store.get(),deck=[],i=0,score=0,checked=false,missed=[];
+for(const [k,v] of Object.entries(CATS)){const o=document.createElement('option');o.value=k;o.textContent=v+(k==='all'?'':' ('+WORDS.filter(w=>w.c===k).length+')');$('cat').appendChild(o)}
+function updWc(){$('wc').textContent=Object.keys(wrongStore).length;$('review').disabled=!Object.keys(wrongStore).length}
+updWc();
+let voice=null,enVoices=[];
+const isEn=v=>/^en([-_]|$)/i.test(v.lang||'');
+function pickVoice(){if(!('speechSynthesis' in window))return;const vs=speechSynthesis.getVoices();enVoices=vs.filter(isEn);
+const sel=$('vsel');sel.innerHTML='';
+if(!enVoices.length){voice=null;$('voiceNote').textContent=vs.length?'Cihazında İngilizce ses yüklü değil, bu yüzden Türkçe okuyor. Çözüm: Chrome veya Edge ile aç ya da sistem ayarlarından İngilizce (UK) metin okuma sesi yükle.':'Sesler yükleniyor…';return}
+const saved=(()=>{try{return localStorage.getItem('spellVoice')}catch(e){return null}})();
+const rank=v=>(/gb/i.test(v.lang)?0:/us/i.test(v.lang)?1:2)+(/google|natural|online/i.test(v.name)?0:0.5);
+enVoices.sort((a,b)=>rank(a)-rank(b));
+enVoices.forEach((v,k)=>{const o=document.createElement('option');o.value=k;o.textContent=v.name+' ('+v.lang.replace('_','-')+')';sel.appendChild(o)});
+let idx=enVoices.findIndex(v=>v.name===saved);if(idx<0)idx=0;sel.value=idx;voice=enVoices[idx];$('voiceNote').textContent='Ses Türkçe okursa listeden başka bir İngilizce ses seç.'}
+if('speechSynthesis' in window){pickVoice();speechSynthesis.onvoiceschanged=pickVoice;setTimeout(pickVoice,800)}else{$('voiceNote').textContent='Bu tarayıcı sesli okumayı desteklemiyor. Chrome, Edge veya Safari ile aç.'}
+$('vsel').onchange=()=>{voice=enVoices[+$('vsel').value];try{localStorage.setItem('spellVoice',voice.name)}catch(e){}};
+function speak(text,rate){if(!('speechSynthesis' in window))return;if(!voice)pickVoice();speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);if(voice){u.voice=voice;u.lang=voice.lang.replace('_','-')}else{u.lang='en-GB'}u.rate=rate;speechSynthesis.speak(u)}
+function say(rate){speak(deck[i].w,rate)}
+$('vtest').onclick=()=>speak('accommodation, Wednesday, environment',0.9);
+function shuffle(a){for(let j=a.length-1;j>0;j--){const k=Math.floor(Math.random()*(j+1));[a[j],a[k]]=[a[k],a[j]]}return a}
+function start(list){deck=list;i=0;score=0;missed=[];$('setup').classList.add('hidden');$('end').classList.add('hidden');$('quiz').classList.remove('hidden');$('qt').textContent=deck.length;show()}
+function show(){checked=false;const w=deck[i];$('qn').textContent=i+1;$('sc').textContent=score+' doğru';$('prog').style.width=(i/deck.length*100)+'%';
+$('inp').value='';$('inp').disabled=false;$('tr').textContent='';$('res').classList.add('hidden');$('check').classList.remove('hidden');$('next').classList.add('hidden');render();$('inp').focus();setTimeout(()=>say(0.9),250)}
+function render(state){const v=$('inp').value;const n=Math.max(deck[i].w.length,v.length+1,8);const c=$('cells');c.innerHTML='';
+for(let k=0;k<n;k++){const d=document.createElement('div');d.className='cell';d.textContent=v[k]&&v[k]!==' '?v[k]:'';if(!state&&k===v.length)d.classList.add('cur');if(state)d.classList.add(state);c.appendChild(d)}}
+const norm=s=>s.trim().toLowerCase().replace(/\s+/g,' ');
+function check(){if(checked)return;const v=norm($('inp').value);if(!v){$('inp').focus();return}checked=true;const w=deck[i];const ok=[w.w,...w.a].some(x=>norm(x)===v);
+$('inp').disabled=true;render(ok?'good':'bad');const r=$('res');r.classList.remove('hidden');
+if(ok){score++;r.className='result';r.innerHTML='<p><b>Doğru:</b> '+w.w+(w.a.length?' <span style="color:var(--muted)">(ya da '+w.a.join(', ')+')</span>':'')+'</p><p>'+w.t+'</p>';if(wrongStore[w.w]){delete wrongStore[w.w];store.set(wrongStore)}}
+else{missed.push(w);wrongStore[w.w]=1;store.set(wrongStore);r.className='result wrong';
+const t=w.w;let diff='';for(let k=0;k<Math.max(t.length,v.length);k++){const a=t[k]||'';diff+=(a.toLowerCase()!==(v[k]||''))?'<span class="x">'+(a||'·')+'</span>':'<span>'+a+'</span>'}
+r.innerHTML='<p>Senin yazdığın: <b>'+escapeH($('inp').value)+'</b></p><p class="diff">Doğrusu: '+diff+'</p><p>'+w.t+'</p>'}
+updWc();$('sc').textContent=score+' doğru';$('check').classList.add('hidden');$('next').classList.remove('hidden');$('next').textContent=i===deck.length-1?'Sonucu gör':'Sonraki';$('next').focus()}
+function escapeH(s){return s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function next(){i++;if(i>=deck.length)return finish();show()}
+function finish(){$('quiz').classList.add('hidden');$('end').classList.remove('hidden');$('final').textContent=score+' / '+deck.length;
+$('finalTxt').textContent=missed.length?'Yanlış yazdıkların aşağıda. Bunlar "Yanlışlarımı çalış" listesine eklendi.':'Hepsini doğru yazdın.';
+$('wrongList').innerHTML=missed.length?'<ul class="wl">'+missed.map(w=>'<li><b>'+w.w+'</b> – '+w.t+'</li>').join('')+'</ul>':'';$('redo').disabled=!Object.keys(wrongStore).length}
+$('start').onclick=()=>{const c=$('cat').value;const pool=c==='all'?WORDS:WORDS.filter(w=>w.c===c);start(shuffle([...pool]).slice(0,+$('len').value))};
+const reviewDeck=()=>shuffle(WORDS.filter(w=>wrongStore[w.w]));
+$('review').onclick=()=>start(reviewDeck());$('redo').onclick=()=>{const d=reviewDeck();if(d.length)start(d)};
+$('again').onclick=()=>{$('end').classList.add('hidden');$('setup').classList.remove('hidden');updWc()};
+$('play').onclick=()=>{say(0.9);$('inp').focus()};$('slow').onclick=()=>{say(0.55);$('inp').focus()};
+$('hintBtn').onclick=()=>{$('tr').textContent='İpucu: '+deck[i].t;$('inp').focus()};
+$('check').onclick=check;$('next').onclick=next;
+$('inp').addEventListener('input',()=>render());
+$('inp').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();check()}});
+$('cells').onclick=()=>$('inp').focus();
+</script></body></html>
