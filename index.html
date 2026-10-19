@@ -166,7 +166,7 @@ const CATS={k:"Sana sorduklarım",x:"Yazım hatalarım",y:"Harita ve yön",all:"
 const $=id=>document.getElementById(id);
 const ls={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 const UNIQUE=(()=>{const seen=new Set();return WORDS.filter(w=>{const k=w.w.toLowerCase();if(seen.has(k))return false;seen.add(k);return true})})();
-const pool=c=>c==='all'?UNIQUE:WORDS.filter(w=>w.c===c);
+const pool=c=>c==='all'?UNIQUE:WORDS.filter(w=>w.c===c||(c==='k'&&w.c==='x'));
 let wrong=ls.get('spellWrong',{}),mode='spell',len=20,deck=[],i=0,score=0,checked=false,missed=[];
 
 function fillCats(sel){for(const [k,v] of Object.entries(CATS)){const o=document.createElement('option');o.value=k;o.textContent=v+' ('+pool(k).length+')';sel.appendChild(o)}}
